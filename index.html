@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给最爱的你</title>
+    <!-- 引入字体图标（可选，为了爱心符号） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- 音乐控制按钮（由于浏览器限制，自动播放通常被禁止，建议做一个按钮） -->
+        <!-- 这里我们先做视觉部分，音乐可以是进阶版 -->
+
+        <!-- 头部：照片区域 -->
+        <div class="photo-frame">
+            <img src="images/us.jpg" alt="Our Photo" class="photo">
+        </div>
+
+        <!-- 中部：标题与计时器 -->
+        <div class="content">
+            <h1>❤️ 亲爱的 [女朋友名字] ❤️</h1>
+            <p class="subtitle">我们已经在一起：</p>
+            <div id="timer" class="timer">
+                正在计算爱的时长...
+            </div>
+        </div>
+
+        <!-- 底部：深情告白（打字机效果容器） -->
+        <div class="love-letter">
+            <p id="typewriter"></p>
+        </div>
+        
+        <!-- 交互按钮 -->
+        <button id="loveBtn" class="love-btn">点我接收爱意</button>
+    </div>
+
+    <!-- 引入JS -->
+    <script src="script.js"></script>
+</body>
+</html>
