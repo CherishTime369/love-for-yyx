@@ -1,161 +1,203 @@
-// --- 1. 配置数据 ---
+// --- 配置区 ---
 const START_DATE = "2023-05-20T00:00:00"; 
 
-// 19张照片配置
-// 注意：现在 v 代表 4:3 横图, h 代表 16:9 横图
-// 顺序对应心形从上到下，从左到右的位置
-const MEMORY_DATA = [
-    // --- Row 1 (顶部凸起, 4:3 比较合适) ---
-    { file: 'v1.jpg', date: '2023.06.01', loc: '公园', text: '初夏的微风，和你嘴角的笑意。' },
-    { file: 'v2.jpg', date: '2023.06.15', loc: '书店', text: '安静的午后，时光变得很慢。' },
-    { file: 'v3.jpg', date: '2023.07.02', loc: '奶茶店', text: '你说这杯奶茶有恋爱的甜味。' },
-    { file: 'v4.jpg', date: '2023.07.20', loc: '地铁', text: '靠在我的肩膀，睡得很香。' },
+// 33张照片的精确数据库
+// 顺序至关重要，对应了拼图从上到下、从左到右的逻辑
+const DB = [
+    // Row 1 (顶部圆弧): s1, w1, w2, s2
+    {f:'s1.jpg', t:'brick-sq'}, {f:'w1.jpg', t:'brick-wide'}, {f:'w2.jpg', t:'brick-wide'}, {f:'s2.jpg', t:'brick-sq'},
     
-    // --- Row 2 (加宽部分, 16:9 比较合适) ---
-    { file: 'h1.jpg', date: '2023.08.01', loc: '海边', text: '浪花拍打着脚踝，我们牵手走过。' },
-    { file: 'h2.jpg', date: '2023.08.05', loc: '日出', text: '第一缕阳光洒在你脸上，真美。' },
-    { file: 'h3.jpg', date: '2023.08.10', loc: '晚餐', text: '浪漫的烛光，倒映在你眼中。' },
+    // Row 2 (上半部): p1, w3, p2, p3, w4, p4
+    {f:'p1.jpg', t:'brick-tall'}, {f:'w3.jpg', t:'brick-wide'}, {f:'p2.jpg', t:'brick-tall'}, 
+    {f:'p3.jpg', t:'brick-tall'}, {f:'w4.jpg', t:'brick-wide'}, {f:'p4.jpg', t:'brick-tall'},
 
-    // --- Row 3 (最宽部分, 16:9) ---
-    { file: 'h4.jpg', date: '2023.09.01', loc: '游乐园', text: '旋转木马转啊转，幸福也围着我们转。' },
-    { file: 'h5.jpg', date: '2023.09.12', loc: '城堡', text: '在童话世界里，你就是我的公主。' },
-    { file: 'h6.jpg', date: '2023.10.01', loc: '过山车', text: '尖叫声中，抓紧彼此的手。' },
+    // Row 3 (填充R2的空隙): w5, w6
+    {f:'w5.jpg', t:'brick-wide'}, {f:'w6.jpg', t:'brick-wide'},
 
-    // --- Row 4 (开始收缩, 16:9) ---
-    { file: 'h7.jpg', date: '2023.11.11', loc: '影院', text: '电影散场，故事还在继续。' },
-    { file: 'h8.jpg', date: '2023.12.25', loc: '圣诞', text: '雪花落下，心是热的。' },
+    // Row 4 (中部最宽): s3, w7, s4, s5, w8, s6
+    {f:'s3.jpg', t:'brick-sq'}, {f:'w7.jpg', t:'brick-wide'}, {f:'s4.jpg', t:'brick-sq'},
+    {f:'s5.jpg', t:'brick-sq'}, {f:'w8.jpg', t:'brick-wide'}, {f:'s6.jpg', t:'brick-sq'},
 
-    // --- Row 5 (下部, 4:3) ---
-    { file: 'v5.jpg', date: '2024.01.01', loc: '跨年', text: '新年快乐，往后余生请多指教。' },
-    { file: 'v6.jpg', date: '2024.02.14', loc: '情人节', text: '玫瑰和你，都是我的珍宝。' },
-    { file: 'v7.jpg', date: '2024.03.20', loc: '踏青', text: '春风十里，不如你的一笑。' },
-    { file: 'v8.jpg', date: '2024.04.05', loc: '雨天', text: '小小的伞下，是我们的全世界。' },
+    // Row 5 (下半部开始): p5, w9, w10, w11, p6
+    {f:'p5.jpg', t:'brick-tall'}, {f:'w9.jpg', t:'brick-wide'}, {f:'w10.jpg', t:'brick-wide'}, 
+    {f:'w11.jpg', t:'brick-wide'}, {f:'p6.jpg', t:'brick-tall'},
 
-    // --- Row 6 (尖尖, 16:9 居中) ---
-    { file: 'h9.jpg', date: '2024.05.20', loc: '一周年', text: '爱是积累，是每一天的点点滴滴。' }
+    // Row 6 (填充R5的空隙): w12, w13, w14
+    {f:'w12.jpg', t:'brick-wide'}, {f:'w13.jpg', t:'brick-wide'}, {f:'w14.jpg', t:'brick-wide'},
+
+    // Row 7 (收缩): p7, w15, w16, p8
+    {f:'p7.jpg', t:'brick-tall'}, {f:'w15.jpg', t:'brick-wide'}, {f:'w16.jpg', t:'brick-wide'}, {f:'p8.jpg', t:'brick-tall'},
+
+    // Row 8 (填充R7的空隙): s7, s8
+    {f:'s7.jpg', t:'brick-sq'}, {f:'s8.jpg', t:'brick-sq'},
+
+    // Row 9 (尖尖): w17
+    {f:'w17.jpg', t:'brick-wide'}
 ];
 
-// --- 2. 初始化 ---
+// 自动生成文案 (你可以手动修改这里的内容)
+DB.forEach((item, i) => {
+    item.date = `2023.05.${(i%30)+1}`;
+    item.loc = i%2===0 ? "Sweet Home" : "Date Place";
+    item.text = `这是第 ${i+1} 个心动瞬间。`;
+});
+
+// --- 初始化 ---
 window.onload = function() {
     initEntry();
-    initHeartGrid();
+    initMosaic();
+    initTimer();
 };
 
 function initEntry() {
-    document.getElementById("start-btn").addEventListener("click", () => {
-        document.getElementById("bg-music").play().catch(()=>console.log("AutoPlay Blocked"));
-        document.getElementById("welcome-screen").style.transform = "translateY(-100%)";
-        
-        setTimeout(startOdometer, 800);
-        // 默认显示第1张
-        changeViewer(0);
-        // 默认点亮第1张心形
-        document.querySelector('.heart-item').classList.add('active');
+    const btn = document.getElementById("enter-btn");
+    btn.addEventListener("click", () => {
+        document.getElementById("bg-music").play().catch(()=>{});
+        document.getElementById("welcome-screen").style.opacity = 0;
+        setTimeout(() => document.getElementById("welcome-screen").remove(), 800);
     });
 }
 
-// --- 3. 渲染心形墙 ---
-function initHeartGrid() {
-    const grid = document.getElementById("heart-mosaic");
+// --- 核心：33张照片的精确布局 ---
+function initMosaic() {
+    const grid = document.getElementById("mosaic-grid");
     
-    MEMORY_DATA.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = `heart-item pos-${index + 1}`;
-        
-        const img = document.createElement("img");
-        img.src = `images/gallery/${item.file}`;
-        img.loading = "lazy";
-        
-        div.appendChild(img);
-        
-        // 点击事件
-        div.addEventListener("click", () => {
-            // 切换高亮
-            document.querySelectorAll(".heart-item").forEach(el => el.classList.remove("active"));
-            div.classList.add("active");
-            // 切换右侧内容
-            changeViewer(index);
-        });
+    // 我们强制使用 8列 网格
+    grid.style.gridTemplateColumns = "repeat(8, 1fr)";
 
-        grid.appendChild(div);
+    // 布局逻辑序列
+    // type: 'space' | 'img'
+    // idx: 对应上面 DB 数组的下标
+    const layout = [
+        // Row 1: 空1, s1, w1, w2, s2, 空1 (1+1+2+2+1+1 = 8)
+        {type:'space', n:1}, {idx:0}, {idx:1}, {idx:2}, {idx:3}, {type:'space', n:1},
+        
+        // Row 2: p1, w3, p2, p3, w4, p4 (1+2+1+1+2+1 = 8)
+        // 注意: p是竖图，会挡住下一行的位置
+        {idx:4}, {idx:5}, {idx:6}, {idx:7}, {idx:8}, {idx:9},
+        
+        // Row 3: (p1挡), w5, w6, (p4挡)
+        // p1占了第1列，p2占第4列，p3占第5列，p4占第8列
+        // 空余位置: 2-3 (w3下面), 6-7 (w4下面)
+        {idx:10}, {idx:11},
+        
+        // Row 4: s3, w7, s4, s5, w8, s6 (1+2+1+1+2+1 = 8)
+        {idx:12}, {idx:13}, {idx:14}, {idx:15}, {idx:16}, {idx:17},
+        
+        // Row 5: p5, w9, w10, w11, p6 (1+2+2+2+1 = 8)
+        {idx:18}, {idx:19}, {idx:20}, {idx:21}, {idx:22},
+        
+        // Row 6: (p5挡), w12, w13, w14, (p6挡)
+        // p5占第1列，p6占第8列。中间剩6格。
+        // w12(2), w13(2), w14(2) 填满6格
+        {idx:23}, {idx:24}, {idx:25},
+        
+        // Row 7: 空1, p7, w15, w16, p8, 空1 (1+1+2+2+1+1 = 8)
+        {type:'space', n:1}, {idx:26}, {idx:27}, {idx:28}, {idx:29}, {type:'space', n:1},
+        
+        // Row 8: (p7挡), s7, s8, (p8挡)
+        // p7占第2列，p8占第7列。
+        // w15下面是3-4, w16下面是5-6。
+        // 我们用 s7(3), s8(6) ? 不，我们填满
+        // 这里需要填补 w15和w16下面的空隙
+        // DB定义 Row 8是 s7, s8。
+        // 我们把 s7 放(3-4中间?不，s是1格), 我们改一下
+        // 我们用两个宽图 w15, w16占据了中间。下一行我们用 s7, s8 来填充 p7/p8 中间的空隙
+        // 空隙列: 3,4,5,6。s7放在3, s8放在6? 中间空?
+        // 让我们调整为: s7放在3-4(作为宽图?不), 
+        // 修正布局: 用 s7 填(3), s8 填(6). 中间 4-5 空?
+        // 不，为了美观，我们让 Row 8 填满。
+        // 实际上 Row 7 的 w15, w16 也是宽图。
+        // 让我们稍微变通一下：Row 8 使用 s7(占用3-4), s8(占用5-6) -> 强制把 s 改成 span 2? 
+        // 或者，我们直接在 Grid 里让 s7 占 3, s8 占 4, ...
+        // 简单点：Row 8 放 s7, s8。并加两个 Spacer。
+        {type:'space', n:2}, {idx:30}, {idx:31}, {type:'space', n:2}, // 这里的idx30,31是s7,s8
+        
+        // Row 9: 空3, w17, 空3 (3+2+3 = 8)
+        {type:'space', n:3}, {idx:32}, {type:'space', n:3}
+    ];
+    
+    // 渲染
+    layout.forEach(item => {
+        if(item.type === 'space') {
+            const sp = document.createElement('div');
+            sp.className = 'spacer';
+            sp.style.gridColumn = `span ${item.n}`;
+            grid.appendChild(sp);
+        } else {
+            const data = DB[item.idx];
+            if(!data) return;
+            
+            const div = document.createElement('div');
+            div.className = `photo-brick ${data.t}`;
+            
+            // 特殊处理 Row 8 的 s7, s8，让它们居中一点
+            if(item.idx === 30 || item.idx === 31) {
+                div.style.gridColumn = "span 2"; // 强制把这两个方图拉宽一点点填补空隙
+            }
+            
+            const img = document.createElement('img');
+            img.src = `images/gallery/${data.f}`;
+            div.appendChild(img);
+            
+            div.addEventListener('mouseenter', () => preview(data));
+            div.addEventListener('click', (e) => lock(e, data, div));
+            grid.appendChild(div);
+        }
     });
 }
 
-// --- 4. 切换右侧视窗 (淡入淡出) ---
-function changeViewer(index) {
-    const data = MEMORY_DATA[index];
-    const container = document.querySelector(".viewer-container");
-    const imgEl = document.getElementById("view-img");
-    const dateEl = document.getElementById("view-date");
-    const locEl = document.getElementById("view-loc");
-    const textEl = document.getElementById("view-text");
+// --- 右侧预览逻辑 (保持不变) ---
+const mainImg = document.getElementById("main-img");
+const captionBar = document.getElementById("caption-bar");
+const guideText = document.getElementById("guide-text");
+let isLocked = false;
 
-    // 1. 淡出
-    container.classList.remove("visible");
-
-    // 2. 只有当CSS动画结束后才切换内容 (300ms后)
+function preview(data) {
+    if(isLocked) return;
+    mainImg.style.opacity = 0.8;
     setTimeout(() => {
-        imgEl.src = `images/gallery/${data.file}`;
-        dateEl.innerText = data.date;
-        locEl.innerText = data.loc;
-        textEl.innerText = data.text;
-        
-        // 3. 淡入
-        container.classList.add("visible");
-    }, 300);
+        mainImg.src = `images/gallery/${data.f}`;
+        mainImg.style.opacity = 1;
+    }, 50);
 }
 
-// --- 5. 老虎机计时器 (优化版) ---
-function startOdometer() {
-    const start = new Date(START_DATE);
-    const now = new Date();
-    const diff = now - start;
+function lock(e, data, el) {
+    isLocked = true;
+    document.querySelectorAll('.photo-brick').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
     
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-    const container = document.getElementById("timer-container");
-    container.innerHTML = ""; 
+    mainImg.src = `images/gallery/${data.f}`;
+    mainImg.style.opacity = 1;
     
-    // 创建数字组
-    const createGroup = (value, label) => {
-        const group = document.createElement("div");
-        group.className = "odo-group";
-        
-        const digits = value.toString().split("");
-        if (label !== "天" && digits.length < 2) digits.unshift("0");
+    document.getElementById("c-date").innerText = data.date;
+    document.getElementById("c-loc").innerText = data.loc;
+    document.getElementById("c-text").innerText = data.text;
+    
+    captionBar.classList.add("show");
+    guideText.classList.add("hide");
+    
+    createParticles();
+}
 
-        digits.forEach((num, i) => {
-            const digitBox = document.createElement("div");
-            digitBox.className = "odo-digit";
-            const strip = document.createElement("div");
-            strip.className = "odo-strip";
-            
-            // 构造滚动序列: 0...9 + 目标数字
-            let html = "";
-            for(let j=0; j<=9; j++) html += `<div>${j}</div>`;
-            html += `<div>${num}</div>`; 
-            strip.innerHTML = html;
-            
-            digitBox.appendChild(strip);
-            group.appendChild(digitBox);
-            
-            // 延迟滚动，制造波浪感
-            setTimeout(() => {
-                strip.style.transform = `translateY(-${10 * 30}px)`;
-            }, i * 200); 
-        });
-        
-        const unit = document.createElement("span");
-        unit.className = "odo-label";
-        unit.innerText = label;
-        group.appendChild(unit);
-        
-        container.appendChild(group);
-    };
+function createParticles() {
+    const box = document.querySelector('.img-box');
+    for(let i=0; i<15; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = '50%';
+        p.style.top = '50%';
+        p.style.setProperty('--x', (Math.random()*200 - 100) + 'px');
+        p.style.setProperty('--y', (Math.random()*200 - 100) + 'px');
+        box.appendChild(p);
+        setTimeout(()=>p.remove(), 600);
+    }
+}
 
-    createGroup(days, "DAYS");
-    createGroup(hours, "HRS");
-    createGroup(minutes, "MIN");
+function initTimer() {
+    const t = document.getElementById("timer");
+    setInterval(() => {
+        const d = Math.floor((new Date() - new Date(START_DATE)) / 86400000);
+        t.innerText = `${d} DAYS TOGETHER`;
+    }, 1000);
 }

@@ -3,59 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Love Story</title>
+    <title>Our Love Mosaic</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- 进场遮罩 -->
+    <!-- 进场 -->
     <div id="welcome-screen">
-        <div class="welcome-box">
-            <div class="heart-icon">❤️</div>
-            <h2>准备好进入我们的世界了吗？</h2>
-            <button id="start-btn">开启回忆</button>
+        <div class="welcome-content">
+            <div class="heart-pulse">❤️</div>
+            <h2>Collecting Moments...</h2>
+            <button id="enter-btn">Open Our World</button>
         </div>
     </div>
 
-    <audio id="bg-music" loop>
+    <audio id="bg-music" preload="auto" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="split-container">
+    <div class="container">
         
-        <!-- 左侧：心形照片墙 -->
-        <div class="left-panel">
-            <div class="panel-header">
-                <h1>Loving You</h1>
-                <!-- 计时器 -->
-                <div class="odometer-box" id="timer-container"></div>
-            </div>
-
-            <!-- 拼图心形容器 -->
-            <div class="heart-mosaic-wrapper">
-                <div class="heart-mosaic" id="heart-mosaic">
-                    <!-- JS 生成 19 个格子 -->
-                </div>
+        <!-- 左侧：俄罗斯方块心形墙 -->
+        <div class="gallery-side">
+            <div class="header">
+                <h1>Love Gallery</h1>
+                <div id="timer">000 DAYS TOGETHER</div>
             </div>
             
-            <p class="hint-text">👈 点击左侧照片，唤醒右侧回忆</p>
+            <div class="mosaic-wrapper">
+                <div class="mosaic-grid" id="mosaic-grid">
+                    <!-- JS 生成 45 张照片 -->
+                </div>
+            </div>
         </div>
 
-        <!-- 右侧：统一视窗 -->
-        <div class="right-panel">
-            <div class="viewer-container">
-                <!-- 图片层 -->
-                <img id="view-img" src="" alt="Memory">
+        <!-- 右侧：沉浸式预览 -->
+        <div class="preview-side">
+            <div class="preview-card">
+                <div class="img-box">
+                    <img id="main-img" src="" alt="Preview">
+                    <div id="click-effect"></div>
+                </div>
                 
-                <!-- 统一的底部蒙版文字层 -->
-                <div class="view-overlay">
-                    <div class="view-meta">
-                        <span id="view-date"></span>
-                        <span class="sep">|</span>
-                        <span id="view-loc"></span>
+                <!-- 底部文字条 -->
+                <div class="caption-bar" id="caption-bar">
+                    <div class="caption-info">
+                        <span id="c-date"></span> • <span id="c-loc"></span>
                     </div>
-                    <p id="view-text"></p>
+                    <p id="c-text"></p>
+                </div>
+
+                <div class="guide-text" id="guide-text">
+                    Hover to Preview / Click to Lock
                 </div>
             </div>
         </div>
