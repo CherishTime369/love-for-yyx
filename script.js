@@ -1,6 +1,6 @@
 // ==========================================
 // 🔴 调试开关：true = 彩色积木模式 | false = 真实照片模式
-const DEBUG_MODE = true; 
+const DEBUG_MODE = false; 
 // ==========================================
 
 const START_DATE = "2023-05-20T00:00:00"; 
@@ -164,4 +164,5 @@ function initTimer() {
         const d = Math.floor((new Date() - start) / 86400000);
         el.innerText = `${d} DAYS OF LOVE`;
     }, 1000);
+
 }
