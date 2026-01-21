@@ -1,144 +1,107 @@
-/* --- 基础设定 --- */
+/* --- 全局设置 --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-    /* 梦幻背景 */
+    font-family: 'Microsoft YaHei', sans-serif;
     background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-    background: radial-gradient(circle at 10% 20%, rgb(255, 200, 210) 0%, rgb(255, 235, 240) 90%);
-    height: 100vh;
-    overflow: hidden;
-    color: #444;
+    background: radial-gradient(circle at center, #ffe6fa 0%, #e3f2fd 100%); /* 少女粉蓝 */
+    height: 100vh; overflow: hidden;
+    user-select: none;
 }
 
-/* --- 进场 --- */
+/* --- 进场遮罩 --- */
 #welcome-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: #fff5f7; z-index: 9999;
     display: flex; justify-content: center; align-items: center;
     transition: opacity 0.8s;
 }
-.welcome-content { text-align: center; }
-.heart-pulse { font-size: 80px; animation: pulse 1.5s infinite; margin-bottom: 20px; }
+.welcome-box { text-align: center; color: #ff6b81; }
+.heart-beat { font-size: 60px; animation: beat 1s infinite; margin-bottom: 20px; }
 #enter-btn {
-    padding: 15px 40px; background: #ff6b81; color: white;
-    border: none; border-radius: 50px; font-size: 1.2rem; cursor: pointer;
-    box-shadow: 0 5px 20px rgba(255, 107, 129, 0.4);
+    padding: 15px 40px; background: #ff4757; color: white;
+    border: none; border-radius: 30px; font-size: 1.2rem; cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
     transition: transform 0.2s;
 }
-#enter-btn:hover { transform: scale(1.1); background: #ff4757; }
+#enter-btn:hover { transform: scale(1.1); }
 
-/* --- 主容器 --- */
+/* --- 布局 --- */
 .container { display: flex; width: 100%; height: 100%; }
 
-/* --- 左侧画廊 --- */
-.gallery-side {
-    flex: 0 0 62%; /* 稍微宽一点放这45张图 */
+/* 左侧 */
+.left-side {
+    flex: 0 0 60%;
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     position: relative;
 }
-.header { position: absolute; top: 30px; left: 40px; }
-.header h1 {
-    font-family: 'Brush Script MT', cursive; font-size: 3.5rem; color: #ff4757;
-    text-shadow: 2px 2px 0px white;
-}
-#timer {
-    background: white; padding: 5px 15px; border-radius: 20px;
-    font-size: 0.9rem; letter-spacing: 2px; color: #888; display: inline-block;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+.header-text { position: absolute; top: 30px; left: 40px; }
+.header-text h1 { font-family: 'Brush Script MT', cursive; font-size: 3rem; color: #ff4757; }
+#timer { color: #888; font-family: monospace; font-size: 1.1rem; margin-top: 5px; background: rgba(255,255,255,0.5); padding: 5px 10px; border-radius: 10px;}
 
 /* 核心网格 */
-.mosaic-wrapper {
-    width: 800px; height: 700px;
+.grid-wrapper {
+    width: 700px; height: 650px;
     display: flex; justify-content: center; align-items: center;
-    transform: scale(0.85); /* 适配屏幕 */
+    transform: scale(0.9); /* 整体缩放适配 */
 }
-.mosaic-grid {
+.grid-container {
     display: grid;
-    /* 10列布局，每列宽1fr */
-    grid-template-columns: repeat(10, 1fr);
-    /* 自动行高，每行约 60px */
-    grid-auto-rows: 60px; 
-    gap: 4px;
-    width: 100%;
+    /* 强制8列，每列80px */
+    grid-template-columns: repeat(8, 80px);
+    /* 强制行高60px */
+    grid-template-rows: repeat(8, 60px);
+    gap: 5px;
 }
 
-.photo-brick {
-    position: relative; overflow: hidden; border-radius: 4px;
-    cursor: pointer; opacity: 0.9; transition: all 0.3s ease;
-    border: 2px solid transparent;
+.brick {
+    border-radius: 6px; overflow: hidden; cursor: pointer;
+    transition: all 0.3s; position: relative;
+    border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-.photo-brick img { width: 100%; height: 100%; object-fit: cover; }
+.brick img { width: 100%; height: 100%; object-fit: cover; }
 
-/* 三种积木形态 */
-.brick-wide { grid-column: span 2; }       /* 16:9 横 */
-.brick-tall { grid-row: span 2; }          /* 9:16 竖 */
-.brick-sq   { grid-column: span 1; }       /* 4:3 方 */
-
-/* 悬停/激活 */
-.photo-brick:hover, .photo-brick.active {
-    z-index: 10; transform: scale(1.15);
-    opacity: 1; border-color: white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+/* 悬停效果 */
+.brick:hover, .brick.active {
+    transform: scale(1.15); z-index: 100;
+    border-color: #ff4757;
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
 }
 
-/* 占位符 (隐形) */
-.spacer { pointer-events: none; }
+/* 调试模式颜色 */
+.brick.debug-sq { background: #2ed573; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;}
+.brick.debug-wide { background: #1e90ff; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;}
+.brick.debug-tall { background: #ff4757; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;}
 
-
-/* --- 右侧预览 --- */
-.preview-side {
-    flex: 1; background: rgba(255,255,255,0.4);
+/* 右侧 */
+.right-side {
+    flex: 1; padding: 40px;
+    background: rgba(255,255,255,0.4); backdrop-filter: blur(10px);
     display: flex; justify-content: center; align-items: center;
-    padding: 30px; backdrop-filter: blur(10px);
 }
 .preview-card {
-    width: 100%; max-width: 500px; height: 80%;
-    background: white; border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-    display: flex; flex-direction: column;
-    overflow: hidden; position: relative;
+    width: 100%; max-width: 500px; height: auto;
+    background: white; border-radius: 15px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
 }
+.img-frame {
+    width: 100%; height: 400px; background: #000; position: relative;
+}
+#preview-img { width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.3s; }
 
-.img-box {
-    flex: 1; position: relative; overflow: hidden; background: #000;
+.placeholder-text {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #666; font-size: 1.2rem;
 }
-#main-img {
-    width: 100%; height: 100%; object-fit: contain; /* 完整显示 */
-    transition: opacity 0.2s;
-}
+.placeholder-text i { font-size: 3rem; color: #ff4757; margin-bottom: 20px; animation: beat 1.5s infinite; }
 
-/* 文字条 */
-.caption-bar {
-    padding: 20px; background: white;
-    border-top: 1px solid #eee;
-    transform: translateY(100%); transition: transform 0.3s ease;
-    position: absolute; bottom: 0; left: 0; width: 100%;
+.info-bar {
+    padding: 25px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    background: white; border-top: 1px solid #f0f0f0; position: relative;
 }
-.caption-bar.show { transform: translateY(0); position: relative; } /* 挤上来 */
+.info-bar.show { transform: translateY(0); }
+.meta { color: #ff4757; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 8px; }
+#p-text { color: #444; line-height: 1.6; font-size: 1.1rem; }
 
-.caption-info { color: #ff6b81; font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
-#c-text { font-size: 1rem; color: #555; line-height: 1.5; }
-
-.guide-text {
-    position: absolute; bottom: 20px; width: 100%; text-align: center;
-    color: #ccc; font-size: 0.9rem; pointer-events: none;
-    transition: opacity 0.3s;
-}
-.guide-text.hide { opacity: 0; }
-
-/* 粒子 */
-.particle {
-    position: absolute; width: 8px; height: 8px; background: #ff4757;
-    border-radius: 50%; pointer-events: none;
-    animation: burst 0.6s forwards;
-}
-@keyframes burst { to { transform: translate(var(--x), var(--y)); opacity: 0; } }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-/* 响应式 */
-@media (max-width: 1300px) {
-    .mosaic-wrapper { width: 600px; height: 500px; }
-    .mosaic-grid { grid-auto-rows: 45px; }
-}
+@keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }

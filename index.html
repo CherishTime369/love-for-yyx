@@ -3,63 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Love Mosaic</title>
+    <title>Our Love Gallery</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- 进场 -->
+    <!-- 进场按钮：修复音频播放的关键 -->
     <div id="welcome-screen">
-        <div class="welcome-content">
-            <div class="heart-pulse">❤️</div>
-            <h2>Collecting Moments...</h2>
-            <button id="enter-btn">Open Our World</button>
+        <div class="welcome-box">
+            <div class="heart-beat">❤️</div>
+            <h2>Ready to open our world?</h2>
+            <!-- 点击这个按钮会同时触发音乐播放和界面进入 -->
+            <button id="enter-btn">开启浪漫回忆</button>
         </div>
     </div>
 
+    <!-- 音频标签 -->
     <audio id="bg-music" preload="auto" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        
-        <!-- 左侧：俄罗斯方块心形墙 -->
-        <div class="gallery-side">
-            <div class="header">
-                <h1>Love Gallery</h1>
-                <div id="timer">000 DAYS TOGETHER</div>
+        <!-- 左侧：绝对定位心形墙 -->
+        <div class="left-side">
+            <div class="header-text">
+                <h1>Love Memory</h1>
+                <div id="timer">Loading...</div>
             </div>
             
-            <div class="mosaic-wrapper">
-                <div class="mosaic-grid" id="mosaic-grid">
-                    <!-- JS 生成 45 张照片 -->
+            <div class="grid-wrapper">
+                <div class="grid-container" id="heart-grid">
+                    <!-- JS 生成格子 -->
                 </div>
             </div>
         </div>
 
-        <!-- 右侧：沉浸式预览 -->
-        <div class="preview-side">
+        <!-- 右侧：预览区 -->
+        <div class="right-side">
             <div class="preview-card">
-                <div class="img-box">
-                    <img id="main-img" src="" alt="Preview">
-                    <div id="click-effect"></div>
+                <div class="img-frame">
+                    <img id="preview-img" src="" alt="Preview">
+                    <div class="placeholder-text" id="placeholder">
+                        <i class="fas fa-heart"></i>
+                        <p>把鼠标移到左侧爱心上<br>点击照片查看详情</p>
+                    </div>
                 </div>
                 
-                <!-- 底部文字条 -->
-                <div class="caption-bar" id="caption-bar">
-                    <div class="caption-info">
-                        <span id="c-date"></span> • <span id="c-loc"></span>
+                <div class="info-bar" id="info-bar">
+                    <div class="meta">
+                        <span id="p-date"></span> <i class="fas fa-circle" style="font-size:4px; vertical-align:middle; margin:0 5px;"></i> <span id="p-loc"></span>
                     </div>
-                    <p id="c-text"></p>
-                </div>
-
-                <div class="guide-text" id="guide-text">
-                    Hover to Preview / Click to Lock
+                    <p id="p-text"></p>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="script.js"></script>
