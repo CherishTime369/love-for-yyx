@@ -4,41 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给最爱的你</title>
-    <!-- 引入字体图标（可选，为了爱心符号） -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- 引入CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- 引入字体图标用于显示关闭按钮等 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <!-- 音乐控制按钮（由于浏览器限制，自动播放通常被禁止，建议做一个按钮） -->
-        <!-- 这里我们先做视觉部分，音乐可以是进阶版 -->
+    <!-- 1. 进场欢迎层 (用于解决自动播放限制) -->
+    <div id="welcome-screen">
+        <div class="welcome-box">
+            <div class="heart-icon">💌</div>
+            <h2>有一份专属回忆待查收</h2>
+            <p>准备好了吗？</p>
+            <button id="start-btn">开启我们的故事</button>
+        </div>
+    </div>
 
-        <!-- 头部：照片区域 -->
+    <!-- 音乐播放器 (隐藏) -->
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <div class="container">
+        <!-- 2. 头部：照片轮播 -->
         <div class="photo-frame">
-            <img src="images/us.jpg" alt="Our Photo" class="photo">
+            <!-- 这里的src由JS动态切换 -->
+            <img id="carousel-img" src="images/slide1.jpg" alt="Our Photo" class="photo">
         </div>
 
-        <!-- 中部：标题与计时器 -->
+        <!-- 3. 标题与拨动计时器 -->
         <div class="content">
-            <h1>❤️ 亲爱的 [女朋友名字] ❤️</h1>
-            <p class="subtitle">我们已经在一起：</p>
-            <div id="timer" class="timer">
-                正在计算爱的时长...
+            <h1>❤️ 亲爱的 [名字] ❤️</h1>
+            <p class="subtitle">我们已经相爱了：</p>
+            <div class="timer-box">
+                <span id="days">000</span> 天 
+                <span id="hours">00</span> 时 
+                <span id="minutes">00</span> 分 
+                <span id="seconds">00</span> 秒
             </div>
         </div>
 
-        <!-- 底部：深情告白（打字机效果容器） -->
+        <!-- 打字机情书 -->
         <div class="love-letter">
             <p id="typewriter"></p>
         </div>
-        
-        <!-- 交互按钮 -->
-        <button id="loveBtn" class="love-btn">点我接收爱意</button>
+
+        <!-- 4. 爱心照片墙 (瀑布流布局) -->
+        <div class="gallery-title">我们的点点滴滴 📸</div>
+        <div id="gallery" class="gallery-grid">
+            <!-- JS 会在这里自动生成照片卡片 -->
+        </div>
+
     </div>
 
-    <!-- 引入JS -->
+    <!-- 5. 照片详情弹窗 (Lightbox) -->
+    <div id="lightbox" class="lightbox hidden">
+        <span class="close-btn">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Zoomed Photo">
+            <div class="caption-box">
+                <h3 id="lightbox-date"></h3>
+                <p id="lightbox-loc"><i class="fas fa-map-marker-alt"></i> <span></span></p>
+                <p id="lightbox-text" class="memory-text"></p>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
