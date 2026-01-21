@@ -1,61 +1,84 @@
 // ==========================================
-// 🔴 调试开关：true = 彩色积木模式 | false = 真实照片模式
-const DEBUG_MODE = false; 
+// 🔴 调试开关：true = 显示色块 | false = 显示照片
+// 请先保持 true 查看形状，准备好照片后再改为 false
+const DEBUG_MODE = true; 
 // ==========================================
 
 const START_DATE = "2023-05-20T00:00:00"; 
 
-// 25张照片的绝对布局数据
-// r:行(1-8), c:列(1-8)
-// 宽图(wide)跨2列，竖图(tall)跨2行，方图(sq)跨1格
+// 37张照片布局 (10列 x 9行)
+// 基础网格 50px
+// sq: 1x1, wide: 2x1, tall: 1x2
 const LAYOUT = [
-    // --- 第1行 (顶部) ---
-    { id:'s1', type:'sq',   r:1, c:2, file:'s1.jpg' },
-    { id:'w1', type:'wide', r:1, c:3, file:'w1.jpg' }, // 占3,4
-    { id:'w2', type:'wide', r:1, c:6, file:'w2.jpg' }, // 占6,7
-    { id:'s2', type:'sq',   r:1, c:8, file:'s2.jpg' },
+    // --- Row 1 (顶部) ---
+    // 左右两边各空1格, 中间空2格
+    { id:'s1', type:'sq',   r:1, c:2, f:'s1.jpg' },
+    { id:'w1', type:'wide', r:1, c:3, f:'w1.jpg' }, // c3-4
+    { id:'w2', type:'wide', r:1, c:7, f:'w2.jpg' }, // c7-8
+    { id:'s2', type:'sq',   r:1, c:9, f:'s2.jpg' },
 
-    // --- 第2行 (竖图开始支撑) ---
-    { id:'p1', type:'tall', r:2, c:1, file:'p1.jpg' }, // 占r2,r3
-    { id:'w3', type:'wide', r:2, c:2, file:'w3.jpg' }, 
-    { id:'p2', type:'tall', r:2, c:4, file:'p2.jpg' }, 
-    { id:'p3', type:'tall', r:2, c:5, file:'p3.jpg' }, 
-    { id:'w4', type:'wide', r:2, c:6, file:'w4.jpg' }, 
-    { id:'p4', type:'tall', r:2, c:8, file:'p4.jpg' }, 
+    // --- Row 2 (最宽处) ---
+    { id:'p1', type:'tall', r:2, c:1, f:'p1.jpg' }, // r2-3
+    { id:'w3', type:'wide', r:2, c:2, f:'w3.jpg' },
+    { id:'s3', type:'sq',   r:2, c:4, f:'s3.jpg' },
+    { id:'s4', type:'sq',   r:2, c:5, f:'s4.jpg' },
+    { id:'w4', type:'wide', r:2, c:6, f:'w4.jpg' }, // 修正：s4占5, w4占6-7
+    { id:'w5', type:'wide', r:2, c:8, f:'w5.jpg' },
+    { id:'p2', type:'tall', r:2, c:10, f:'p2.jpg' }, // r2-3
 
-    // --- 第3行 (填补竖图间的空隙) ---
-    { id:'w5', type:'wide', r:3, c:2, file:'w5.jpg' },
-    { id:'w6', type:'wide', r:3, c:6, file:'w6.jpg' },
+    // --- Row 3 (填充 Row 2 竖图中间) ---
+    // p1(c1), p2(c10) 占着位
+    { id:'w6', type:'wide', r:3, c:2, f:'w6.jpg' },
+    { id:'p3', type:'tall', r:3, c:4, f:'p3.jpg' }, // r3-4
+    { id:'w7', type:'wide', r:3, c:5, f:'w7.jpg' }, // 跨 c5-6
+    { id:'p4', type:'tall', r:3, c:7, f:'p4.jpg' }, // r3-4
+    { id:'w8', type:'wide', r:3, c:8, f:'w8.jpg' },
 
-    // --- 第4行 (最宽处) ---
-    { id:'s3', type:'sq',   r:4, c:1, file:'s3.jpg' },
-    { id:'w7', type:'wide', r:4, c:2, file:'w7.jpg' },
-    { id:'s4', type:'sq',   r:4, c:4, file:'s4.jpg' },
-    { id:'s5', type:'sq',   r:4, c:5, file:'s5.jpg' },
-    { id:'w8', type:'wide', r:4, c:6, file:'w8.jpg' },
-    { id:'s6', type:'sq',   r:4, c:8, file:'s6.jpg' },
+    // --- Row 4 (宽阔部) ---
+    { id:'s5', type:'sq',   r:4, c:1, f:'s5.jpg' },
+    { id:'w9', type:'wide', r:4, c:2, f:'w9.jpg' },
+    // c4(p3占), c7(p4占)
+    { id:'w10',type:'wide', r:4, c:5, f:'w10.jpg' },
+    { id:'w11',type:'wide', r:4, c:8, f:'w11.jpg' },
+    { id:'s6', type:'sq',   r:4, c:10,f:'s6.jpg' },
 
-    // --- 第5行 (收缩) ---
-    { id:'p5', type:'tall', r:5, c:2, file:'p5.jpg' }, // 占r5,r6
-    { id:'w9', type:'wide', r:5, c:3, file:'w9.jpg' },
-    { id:'w10',type:'wide', r:5, c:5, file:'w10.jpg' },
-    { id:'p6', type:'tall', r:5, c:7, file:'p6.jpg' },
+    // --- Row 5 (开始收缩) ---
+    { id:'p5', type:'tall', r:5, c:2, f:'p5.jpg' }, // r5-6
+    { id:'w12',type:'wide', r:5, c:3, f:'w12.jpg' },
+    { id:'p6', type:'tall', r:5, c:5, f:'p6.jpg' }, // r5-6 (中柱)
+    { id:'w13',type:'wide', r:5, c:6, f:'w13.jpg' }, // 修正：p6占5, w13占6-7
+    { id:'p7', type:'tall', r:5, c:8, f:'p7.jpg' }, // r5-6
+    { id:'w14',type:'wide', r:5, c:9, f:'w14.jpg' }, // 这里的w14太宽了会溢出? 不，c9-10 ok
 
-    // --- 第6行 (填补) ---
-    { id:'w11', type:'wide', r:6, c:3, file:'w11.jpg' },
-    { id:'w12', type:'wide', r:6, c:5, file:'w12.jpg' },
+    // --- Row 6 (填充) ---
+    // p5(c2), p6(c5), p7(c8) 占位
+    { id:'w15',type:'wide', r:6, c:3, f:'w15.jpg' },
+    // p6占c5
+    { id:'w16',type:'wide', r:6, c:6, f:'w16.jpg' },
+    { id:'s7', type:'sq',   r:6, c:9, f:'s7.jpg' }, // 修正填空
 
-    // --- 第7行 (尖尖) ---
-    { id:'w13', type:'wide', r:7, c:4, file:'w13.jpg' } // 居中
+    // --- Row 7 (下部) ---
+    { id:'p8', type:'tall', r:7, c:3, f:'p8.jpg' }, // r7-8
+    { id:'w17',type:'wide', r:7, c:4, f:'w17.jpg' },
+    { id:'w18',type:'wide', r:7, c:6, f:'w18.jpg' },
+    { id:'p9', type:'tall', r:7, c:8, f:'p9.jpg' }, // r7-8
+
+    // --- Row 8 (填充) ---
+    // p8(c3), p9(c8) 占位
+    { id:'w19',type:'wide', r:8, c:4, f:'w19.jpg' },
+    { id:'p10',type:'tall', r:8, c:6, f:'p10.jpg' }, // r8-9 (尖尖柱)
+
+    // --- Row 9 (底部尖) ---
+    { id:'s8', type:'sq',   r:9, c:5, f:'s8.jpg' }
+    // p10 占c6
 ];
 
-// 自动生成虚拟文案
+// 自动生成文案
 LAYOUT.forEach((item, i) => {
     item.date = `2023.05.${(i%30)+1}`;
-    item.loc = i%2===0 ? "Home Sweet Home" : "Traveling";
-    item.text = `这是关于 ${item.file} 的美好回忆。第 ${i+1} 个心动瞬间。`;
+    item.loc = i%2===0 ? "Sweet Home" : "Date Place";
+    item.text = `这是第 ${i+1} 张照片的回忆。`;
 });
-
 
 window.onload = function() {
     initEntry();
@@ -63,53 +86,41 @@ window.onload = function() {
     initTimer();
 };
 
-// 1. 修复音频播放逻辑
 function initEntry() {
     const btn = document.getElementById("enter-btn");
     const music = document.getElementById("bg-music");
     const screen = document.getElementById("welcome-screen");
 
     btn.addEventListener("click", () => {
-        // 关键：在用户点击事件中调用 play()
-        music.play().then(() => {
-            console.log("Music Playing");
-        }).catch(err => {
-            console.log("Auto-play blocked, wait for interaction", err);
-        });
-
-        // 移除遮罩
+        music.play().catch(e => console.log(e));
         screen.style.opacity = 0;
         setTimeout(() => screen.remove(), 800);
     });
 }
 
-// 2. 渲染绝对定位网格
 function renderGrid() {
     const grid = document.getElementById("heart-grid");
     
     LAYOUT.forEach(item => {
         const div = document.createElement("div");
-        div.className = `brick brick-${item.type}`;
+        div.className = "brick"; // 基础类
         
-        // 绝对定位核心
+        // 绝对定位
         div.style.gridRowStart = item.r;
         div.style.gridColumnStart = item.c;
-        
-        // 跨度设置
         if(item.type === 'wide') div.style.gridColumnEnd = "span 2";
         if(item.type === 'tall') div.style.gridRowEnd = "span 2";
 
         if (DEBUG_MODE) {
-            // 调试模式：显示色块和文字
-            div.classList.add(`debug-${item.type}`);
-            div.innerText = item.file;
+            // 调试模式：添加debug类和颜色类
+            div.classList.add("debug", item.type);
+            div.innerText = item.f;
         } else {
-            // 正常模式：显示图片
+            // 正常模式：不添加debug类！
             const img = document.createElement("img");
-            img.src = `images/gallery/${item.file}`;
+            img.src = `images/gallery/${item.f}`;
             div.appendChild(img);
             
-            // 交互
             div.addEventListener("mouseenter", () => preview(item));
             div.addEventListener("click", (e) => lock(e, item, div));
         }
@@ -118,7 +129,6 @@ function renderGrid() {
     });
 }
 
-// 3. 预览逻辑
 const prevImg = document.getElementById("preview-img");
 const placeholder = document.getElementById("placeholder");
 const infoBar = document.getElementById("info-bar");
@@ -126,34 +136,26 @@ let isLocked = false;
 
 function preview(item) {
     if(isLocked) return;
-    
     placeholder.style.opacity = 0;
     prevImg.style.opacity = 0.8;
-    
-    // 简单的图片切换
     setTimeout(() => {
-        prevImg.src = `images/gallery/${item.file}`;
+        prevImg.src = `images/gallery/${item.f}`;
         prevImg.style.opacity = 1;
     }, 50);
 }
 
 function lock(e, item, el) {
     isLocked = true;
-    
-    // 高亮当前
     document.querySelectorAll('.brick').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
     
-    // 强制显示当前图
-    prevImg.src = `images/gallery/${item.file}`;
+    prevImg.src = `images/gallery/${item.f}`;
     prevImg.style.opacity = 1;
     placeholder.style.display = 'none';
     
-    // 显示底部文字
     document.getElementById("p-date").innerText = item.date;
     document.getElementById("p-loc").innerText = item.loc;
     document.getElementById("p-text").innerText = item.text;
-    
     infoBar.classList.add("show");
 }
 
@@ -162,7 +164,6 @@ function initTimer() {
     const start = new Date(START_DATE);
     setInterval(() => {
         const d = Math.floor((new Date() - start) / 86400000);
-        el.innerText = `${d} DAYS OF LOVE`;
+        el.innerText = `${d} DAYS TOGETHER`;
     }, 1000);
-
 }

@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Love Gallery</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Our Love Story</title>
+    <!-- 强制刷新缓存 -->
+    <link rel="stylesheet" href="style.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- 进场按钮：修复音频播放的关键 -->
     <div id="welcome-screen">
         <div class="welcome-box">
             <div class="heart-beat">❤️</div>
-            <h2>Ready to open our world?</h2>
-            <!-- 点击这个按钮会同时触发音乐播放和界面进入 -->
-            <button id="enter-btn">开启浪漫回忆</button>
+            <h2>点击开启我们的回忆</h2>
+            <button id="enter-btn">Enter</button>
         </div>
     </div>
 
-    <!-- 音频标签 -->
     <audio id="bg-music" preload="auto" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <!-- 左侧：绝对定位心形墙 -->
         <div class="left-side">
             <div class="header-text">
                 <h1>Love Memory</h1>
@@ -34,25 +31,23 @@
             
             <div class="grid-wrapper">
                 <div class="grid-container" id="heart-grid">
-                    <!-- JS 生成格子 -->
+                    <!-- JS 生成 -->
                 </div>
             </div>
         </div>
 
-        <!-- 右侧：预览区 -->
         <div class="right-side">
             <div class="preview-card">
                 <div class="img-frame">
-                    <img id="preview-img" src="" alt="Preview">
+                    <img id="preview-img" src="" alt="">
                     <div class="placeholder-text" id="placeholder">
                         <i class="fas fa-heart"></i>
-                        <p>把鼠标移到左侧爱心上<br>点击照片查看详情</p>
+                        <p>37个心动瞬间</p>
                     </div>
                 </div>
-                
                 <div class="info-bar" id="info-bar">
                     <div class="meta">
-                        <span id="p-date"></span> <i class="fas fa-circle" style="font-size:4px; vertical-align:middle; margin:0 5px;"></i> <span id="p-loc"></span>
+                        <span id="p-date"></span> • <span id="p-loc"></span>
                     </div>
                     <p id="p-text"></p>
                 </div>
@@ -60,6 +55,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- 强制刷新缓存 -->
+    <script src="script.js?v=2"></script>
 </body>
 </html>
