@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loving You</title>
+    <title>Our Love Story</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -13,8 +13,8 @@
     <div id="welcome-screen">
         <div class="welcome-box">
             <div class="heart-icon">❤️</div>
-            <h2>准备好接收爱的信号了吗？</h2>
-            <button id="start-btn">开启旅程</button>
+            <h2>准备好进入我们的世界了吗？</h2>
+            <button id="start-btn">开启回忆</button>
         </div>
     </div>
 
@@ -22,113 +22,44 @@
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 主容器：变宽了 -->
-    <div class="main-container">
+    <div class="split-container">
         
-        <!-- 1. 宽屏 3D 轮播图 -->
-        <div class="hero-section">
-            <div class="carousel-container">
-                <div class="carousel-slide active">
-                    <img src="images/slide1.jpg" alt="Memory 1">
-                    <div class="carousel-caption">
-                        <h3>初次相遇</h3>
-                        <p>那天阳光正好，你穿了一件白色的衬衫。</p>
-                    </div>
+        <!-- 左侧：心形照片墙 -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h1>Loving You</h1>
+                <!-- 计时器 -->
+                <div class="odometer-box" id="timer-container"></div>
+            </div>
+
+            <!-- 拼图心形容器 -->
+            <div class="heart-mosaic-wrapper">
+                <div class="heart-mosaic" id="heart-mosaic">
+                    <!-- JS 生成 19 个格子 -->
                 </div>
-                <div class="carousel-slide">
-                    <img src="images/slide2.jpg" alt="Memory 2">
-                    <div class="carousel-caption">
-                        <h3>第一次旅行</h3>
-                        <p>一起去海边看日出，风很大，但手很暖。</p>
-                    </div>
-                </div>
-                <div class="carousel-slide">
-                    <img src="images/slide3.jpg" alt="Memory 3">
-                    <div class="carousel-caption">
-                        <h3>搞怪时刻</h3>
-                        <p>你总说我拍照技术烂，但我觉得你怎样都美。</p>
-                    </div>
-                </div>
-                <div class="carousel-slide">
-                    <img src="images/slide4.jpg" alt="Memory 4">
-                    <div class="carousel-caption">
-                        <h3>纪念日快乐</h3>
-                        <p>一周年快乐，谢谢你包容我的小脾气。</p>
-                    </div>
-                </div>
-                <div class="carousel-slide">
-                    <img src="images/slide5.jpg" alt="Memory 5">
-                    <div class="carousel-caption">
-                        <h3>未来可期</h3>
-                        <p>从今往后，目光所至，全都是你。</p>
-                    </div>
-                </div>
+            </div>
+            
+            <p class="hint-text">👈 点击左侧照片，唤醒右侧回忆</p>
+        </div>
+
+        <!-- 右侧：统一视窗 -->
+        <div class="right-panel">
+            <div class="viewer-container">
+                <!-- 图片层 -->
+                <img id="view-img" src="" alt="Memory">
                 
-                <!-- 切换按钮 -->
-                <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-                <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
-                
-                <!-- 指示点 -->
-                <div class="dots-container"></div>
+                <!-- 统一的底部蒙版文字层 -->
+                <div class="view-overlay">
+                    <div class="view-meta">
+                        <span id="view-date"></span>
+                        <span class="sep">|</span>
+                        <span id="view-loc"></span>
+                    </div>
+                    <p id="view-text"></p>
+                </div>
             </div>
         </div>
 
-        <!-- 2. 标题区 -->
-        <div class="header-content">
-            <h1>❤️ 亲爱的 [名字] ❤️</h1>
-            <p class="subtitle">我们相爱的时光</p>
-        </div>
-
-        <!-- 3. 老虎机滚动计时器 -->
-        <div class="slot-timer">
-            <!-- 天 -->
-            <div class="slot-unit">
-                <div class="slot-frame" id="day-slot"></div>
-                <span class="label">DAYS</span>
-            </div>
-            <div class="separator">:</div>
-            <!-- 时 -->
-            <div class="slot-unit">
-                <div class="slot-frame" id="hour-slot"></div>
-                <span class="label">HOURS</span>
-            </div>
-            <div class="separator">:</div>
-            <!-- 分 -->
-            <div class="slot-unit">
-                <div class="slot-frame" id="min-slot"></div>
-                <span class="label">MIN</span>
-            </div>
-            <div class="separator">:</div>
-            <!-- 秒 -->
-            <div class="slot-unit">
-                <div class="slot-frame" id="sec-slot"></div>
-                <span class="label">SEC</span>
-            </div>
-        </div>
-
-        <!-- 打字机情书 -->
-        <div class="love-letter">
-            <p id="typewriter"></p>
-        </div>
-
-        <!-- 4. 完美心形照片墙 (32张照片布局) -->
-        <div class="heart-gallery-wrapper">
-            <div class="heart-grid" id="heart-grid">
-                <!-- JS 会自动填充32张照片 -->
-            </div>
-        </div>
-
-    </div>
-
-    <!-- 弹窗 (保持不变) -->
-    <div id="lightbox" class="lightbox hidden">
-        <span class="close-btn">&times;</span>
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Zoomed">
-            <div class="caption-box">
-                <p id="lightbox-text"></p>
-            </div>
-        </div>
     </div>
 
     <script src="script.js"></script>

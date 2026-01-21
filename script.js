@@ -1,184 +1,161 @@
-// --- 配置区 ---
-const START_DATE = "2023-05-20T00:00:00"; // 在一起的日期
+// --- 1. 配置数据 ---
+const START_DATE = "2023-05-20T00:00:00"; 
 
-// --- 初始化 ---
+// 19张照片配置
+// 注意：现在 v 代表 4:3 横图, h 代表 16:9 横图
+// 顺序对应心形从上到下，从左到右的位置
+const MEMORY_DATA = [
+    // --- Row 1 (顶部凸起, 4:3 比较合适) ---
+    { file: 'v1.jpg', date: '2023.06.01', loc: '公园', text: '初夏的微风，和你嘴角的笑意。' },
+    { file: 'v2.jpg', date: '2023.06.15', loc: '书店', text: '安静的午后，时光变得很慢。' },
+    { file: 'v3.jpg', date: '2023.07.02', loc: '奶茶店', text: '你说这杯奶茶有恋爱的甜味。' },
+    { file: 'v4.jpg', date: '2023.07.20', loc: '地铁', text: '靠在我的肩膀，睡得很香。' },
+    
+    // --- Row 2 (加宽部分, 16:9 比较合适) ---
+    { file: 'h1.jpg', date: '2023.08.01', loc: '海边', text: '浪花拍打着脚踝，我们牵手走过。' },
+    { file: 'h2.jpg', date: '2023.08.05', loc: '日出', text: '第一缕阳光洒在你脸上，真美。' },
+    { file: 'h3.jpg', date: '2023.08.10', loc: '晚餐', text: '浪漫的烛光，倒映在你眼中。' },
+
+    // --- Row 3 (最宽部分, 16:9) ---
+    { file: 'h4.jpg', date: '2023.09.01', loc: '游乐园', text: '旋转木马转啊转，幸福也围着我们转。' },
+    { file: 'h5.jpg', date: '2023.09.12', loc: '城堡', text: '在童话世界里，你就是我的公主。' },
+    { file: 'h6.jpg', date: '2023.10.01', loc: '过山车', text: '尖叫声中，抓紧彼此的手。' },
+
+    // --- Row 4 (开始收缩, 16:9) ---
+    { file: 'h7.jpg', date: '2023.11.11', loc: '影院', text: '电影散场，故事还在继续。' },
+    { file: 'h8.jpg', date: '2023.12.25', loc: '圣诞', text: '雪花落下，心是热的。' },
+
+    // --- Row 5 (下部, 4:3) ---
+    { file: 'v5.jpg', date: '2024.01.01', loc: '跨年', text: '新年快乐，往后余生请多指教。' },
+    { file: 'v6.jpg', date: '2024.02.14', loc: '情人节', text: '玫瑰和你，都是我的珍宝。' },
+    { file: 'v7.jpg', date: '2024.03.20', loc: '踏青', text: '春风十里，不如你的一笑。' },
+    { file: 'v8.jpg', date: '2024.04.05', loc: '雨天', text: '小小的伞下，是我们的全世界。' },
+
+    // --- Row 6 (尖尖, 16:9 居中) ---
+    { file: 'h9.jpg', date: '2024.05.20', loc: '一周年', text: '爱是积累，是每一天的点点滴滴。' }
+];
+
+// --- 2. 初始化 ---
 window.onload = function() {
-    initMusicAndEntry();
-    initCarousel();
-    initHeartGrid(); // 生成心形照片墙
+    initEntry();
+    initHeartGrid();
 };
 
-// --- 1. 进场与音乐 ---
-function initMusicAndEntry() {
-    const startBtn = document.getElementById("start-btn");
-    const welcome = document.getElementById("welcome-screen");
-    const music = document.getElementById("bg-music");
-    const typewriter = document.getElementById("typewriter");
-    const text = "遇见你，是我这辈子最幸运的事。";
-
-    startBtn.addEventListener("click", () => {
-        music.play().catch(e => console.log("需交互播放"));
-        welcome.style.opacity = 0;
-        setTimeout(() => welcome.remove(), 1000);
+function initEntry() {
+    document.getElementById("start-btn").addEventListener("click", () => {
+        document.getElementById("bg-music").play().catch(()=>console.log("AutoPlay Blocked"));
+        document.getElementById("welcome-screen").style.transform = "translateY(-100%)";
         
-        // 启动老虎机
-        startSlotMachine();
-        
-        // 启动打字机
-        let i = 0;
-        function type() {
-            if (i < text.length) {
-                typewriter.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(type, 150);
-            }
-        }
-        type();
+        setTimeout(startOdometer, 800);
+        // 默认显示第1张
+        changeViewer(0);
+        // 默认点亮第1张心形
+        document.querySelector('.heart-item').classList.add('active');
     });
 }
 
-// --- 2. 宽屏轮播逻辑 ---
-function initCarousel() {
-    const slides = document.querySelectorAll('.carousel-slide');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    let index = 0;
-
-    function showSlide(n) {
-        slides.forEach(s => s.classList.remove('active'));
-        index = (n + slides.length) % slides.length;
-        slides[index].classList.add('active');
-    }
-
-    nextBtn.addEventListener('click', () => showSlide(index + 1));
-    prevBtn.addEventListener('click', () => showSlide(index - 1));
-
-    // 自动播放
-    setInterval(() => showSlide(index + 1), 5000);
-}
-
-// --- 3. 老虎机数字滚动逻辑 (核心难点) ---
-function startSlotMachine() {
-    const slots = [
-        document.getElementById("day-slot"),
-        document.getElementById("hour-slot"),
-        document.getElementById("min-slot"),
-        document.getElementById("sec-slot")
-    ];
-
-    // 初始化：给每个框框里塞入 0-9 的长条
-    slots.forEach(slot => {
-        const strip = document.createElement("div");
-        strip.className = "digit-strip";
-        // 生成 0-9 以及多一组 0-9 用于无缝滚动
-        let html = "";
-        for (let i = 0; i < 10; i++) html += `<div>${i}</div>`; 
-        strip.innerHTML = html;
-        slot.appendChild(strip);
-    });
-
-    function updateTime() {
-        const start = new Date(START_DATE);
-        const now = new Date();
-        const diff = now - start;
-        
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        const values = [days, hours, minutes, seconds];
-
-        // 依次更新天、时、分、秒
-        // 注意：这里简化了逻辑，直接更新数值。
-        // 如果要做完美的“滚动停下”动画，需要非常复杂的 CSS 计算。
-        // 这里采用“翻牌”效果的变种：数字直接跳动，但配合秒数的流动。
-        
-        // 为了实现"定格"效果：
-        // 刚开始我们让所有数字乱跳，然后依次停止。
-        // 但这里为了代码稳定性，我们直接显示真实时间，
-        // 配合 CSS 的 transition 让它滑进去。
-        
-        slots.forEach((slot, i) => {
-            // 清空旧的，直接显示数字（最稳妥的方案，防止数字对不齐）
-            // 如果要强行做滚动，可以改变 strip 的 translateY
-            slot.innerHTML = values[i]; 
-        });
-    }
-
-    // 模拟老虎机开场动画 (乱数 -> 定格)
-    let scrambleCount = 0;
-    let scrambleTimer = setInterval(() => {
-        slots.forEach(slot => slot.innerText = Math.floor(Math.random() * 99));
-        scrambleCount++;
-        
-        // 2秒后停止乱跳，显示真实时间
-        if (scrambleCount > 20) {
-            clearInterval(scrambleTimer);
-            
-            // 依次定格动画
-            setTimeout(() => {
-                updateTime(); // 显示一次
-                setInterval(updateTime, 1000); // 开始每秒走动
-            }, 100);
-        }
-    }, 100);
-}
-
-// --- 4. 心形 Grid 生成器 (关键布局) ---
+// --- 3. 渲染心形墙 ---
 function initHeartGrid() {
-    const grid = document.getElementById("heart-grid");
+    const grid = document.getElementById("heart-mosaic");
     
-    // 我们定义一个 9列 x 8行 的网格
-    // 1 代表放图片，0 代表空白
-    // 这是一个简单的心形矩阵
-    const heartMap = [
-        [0, 1, 1, 0, 0, 0, 1, 1, 0], // 第一行
-        [1, 1, 1, 1, 0, 1, 1, 1, 1], // 第二行
-        [1, 1, 1, 1, 1, 1, 1, 1, 1], // 第三行
-        [1, 1, 1, 1, 1, 1, 1, 1, 1], // 第四行
-        [0, 1, 1, 1, 1, 1, 1, 1, 0], // 第五行
-        [0, 0, 1, 1, 1, 1, 1, 0, 0], // 第六行
-        [0, 0, 0, 1, 1, 1, 0, 0, 0], // 第七行
-        [0, 0, 0, 0, 1, 0, 0, 0, 0]  // 第八行 (尖尖)
-    ];
-
-    let imgIndex = 1;
-
-    // 遍历矩阵生成 DOM
-    heartMap.forEach((row, rowIndex) => {
-        row.forEach((cell, colIndex) => {
-            if (cell === 1) {
-                // 如果需要放图片
-                const img = document.createElement("img");
-                img.className = "heart-photo";
-                // 循环使用 1-32 张图片
-                const currentImgNum = (imgIndex % 32) || 32; 
-                img.src = `images/gallery/${currentImgNum}.jpg`;
-                img.onclick = () => openLightbox(img.src, `第 ${currentImgNum} 张回忆`);
-                
-                // 设置 Grid 位置
-                img.style.gridColumnStart = colIndex + 1;
-                img.style.gridRowStart = rowIndex + 1;
-                
-                grid.appendChild(img);
-                imgIndex++;
-            }
+    MEMORY_DATA.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = `heart-item pos-${index + 1}`;
+        
+        const img = document.createElement("img");
+        img.src = `images/gallery/${item.file}`;
+        img.loading = "lazy";
+        
+        div.appendChild(img);
+        
+        // 点击事件
+        div.addEventListener("click", () => {
+            // 切换高亮
+            document.querySelectorAll(".heart-item").forEach(el => el.classList.remove("active"));
+            div.classList.add("active");
+            // 切换右侧内容
+            changeViewer(index);
         });
+
+        grid.appendChild(div);
     });
 }
 
-// 弹窗逻辑
-function openLightbox(src, text) {
-    const lightbox = document.getElementById("lightbox");
-    document.getElementById("lightbox-img").src = src;
-    document.getElementById("lightbox-text").innerText = text;
-    lightbox.classList.remove("hidden");
+// --- 4. 切换右侧视窗 (淡入淡出) ---
+function changeViewer(index) {
+    const data = MEMORY_DATA[index];
+    const container = document.querySelector(".viewer-container");
+    const imgEl = document.getElementById("view-img");
+    const dateEl = document.getElementById("view-date");
+    const locEl = document.getElementById("view-loc");
+    const textEl = document.getElementById("view-text");
+
+    // 1. 淡出
+    container.classList.remove("visible");
+
+    // 2. 只有当CSS动画结束后才切换内容 (300ms后)
+    setTimeout(() => {
+        imgEl.src = `images/gallery/${data.file}`;
+        dateEl.innerText = data.date;
+        locEl.innerText = data.loc;
+        textEl.innerText = data.text;
+        
+        // 3. 淡入
+        container.classList.add("visible");
+    }, 300);
+}
+
+// --- 5. 老虎机计时器 (优化版) ---
+function startOdometer() {
+    const start = new Date(START_DATE);
+    const now = new Date();
+    const diff = now - start;
     
-    // 点击背景关闭
-    lightbox.onclick = (e) => {
-        if (e.target !== document.getElementById("lightbox-img")) {
-            lightbox.classList.add("hidden");
-        }
-    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+    const container = document.getElementById("timer-container");
+    container.innerHTML = ""; 
+    
+    // 创建数字组
+    const createGroup = (value, label) => {
+        const group = document.createElement("div");
+        group.className = "odo-group";
+        
+        const digits = value.toString().split("");
+        if (label !== "天" && digits.length < 2) digits.unshift("0");
+
+        digits.forEach((num, i) => {
+            const digitBox = document.createElement("div");
+            digitBox.className = "odo-digit";
+            const strip = document.createElement("div");
+            strip.className = "odo-strip";
+            
+            // 构造滚动序列: 0...9 + 目标数字
+            let html = "";
+            for(let j=0; j<=9; j++) html += `<div>${j}</div>`;
+            html += `<div>${num}</div>`; 
+            strip.innerHTML = html;
+            
+            digitBox.appendChild(strip);
+            group.appendChild(digitBox);
+            
+            // 延迟滚动，制造波浪感
+            setTimeout(() => {
+                strip.style.transform = `translateY(-${10 * 30}px)`;
+            }, i * 200); 
+        });
+        
+        const unit = document.createElement("span");
+        unit.className = "odo-label";
+        unit.innerText = label;
+        group.appendChild(unit);
+        
+        container.appendChild(group);
+    };
+
+    createGroup(days, "DAYS");
+    createGroup(hours, "HRS");
+    createGroup(minutes, "MIN");
 }

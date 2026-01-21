@@ -1,164 +1,184 @@
-/* --- 全局重置 --- */
+/* --- 全局设置 --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #ffe6e6; /* 浅粉底色 */
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #0f0f0f; /* 极简深黑背景 */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* 欢迎层 */
+/* --- 进场遮罩 --- */
 #welcome-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #fff0f3; z-index: 9999;
+    background: #000; z-index: 9999;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 1s;
+    transition: transform 0.8s ease-in-out;
 }
 .welcome-box { text-align: center; }
-.heart-icon { font-size: 80px; animation: beat 1s infinite; }
+.heart-icon { font-size: 80px; animation: beat 1s infinite; margin-bottom: 20px;}
 #start-btn {
-    margin-top: 20px; padding: 12px 40px; border-radius: 50px;
-    background: #ff4757; color: white; border: none; font-size: 18px; cursor: pointer;
+    padding: 12px 35px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.5);
+    background: transparent; color: white; font-size: 16px; cursor: pointer;
+    transition: all 0.3s;
 }
+#start-btn:hover { background: white; color: black; }
 
-/* 主容器：加宽到 1200px */
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 0 50px rgba(0,0,0,0.05);
-    min-height: 100vh;
-}
-
-/* --- 1. 宽屏轮播图 --- */
-.hero-section {
-    width: 100%;
-    margin-bottom: 40px;
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-.carousel-container {
-    position: relative;
-    height: 500px; /* 电脑端高度 */
-}
-.carousel-slide {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; transition: opacity 0.8s ease-in-out;
-}
-.carousel-slide.active { opacity: 1; z-index: 1; }
-.carousel-slide img {
-    width: 100%; height: 100%; object-fit: cover;
-}
-/* 轮播文字遮罩 */
-.carousel-caption {
-    position: absolute;
-    bottom: 0; left: 0; width: 100%;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
-    color: white;
-    padding: 30px;
-    transform: translateY(20px); opacity: 0; transition: all 0.5s 0.3s;
-}
-.carousel-slide.active .carousel-caption { transform: translateY(0); opacity: 1; }
-.nav-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    background: rgba(255,255,255,0.3); border: none; color: white;
-    padding: 15px; cursor: pointer; z-index: 2; border-radius: 50%;
-    font-size: 20px; transition: background 0.3s;
-}
-.nav-btn:hover { background: rgba(255,255,255,0.8); color: #333; }
-.prev-btn { left: 20px; }
-.next-btn { right: 20px; }
-
-/* --- 2. 标题区 --- */
-.header-content { text-align: center; margin: 40px 0 20px; }
-.header-content h1 { color: #ff4757; font-size: 2.5rem; }
-.subtitle { color: #888; letter-spacing: 2px; margin-top: 10px; }
-
-/* --- 3. 老虎机计时器 --- */
-.slot-timer {
-    display: flex; justify-content: center; align-items: center;
-    gap: 15px; margin: 30px 0;
-}
-.slot-unit { text-align: center; }
-.slot-frame {
-    width: 60px; height: 80px; /* 单个数字视窗大小 */
-    background: #333; color: white;
-    border-radius: 8px; font-size: 40px; line-height: 80px;
-    overflow: hidden; /* 关键：隐藏滚动条 */
-    position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    font-family: 'Courier New', monospace;
-    display: flex; justify-content: center;
-}
-/* 数字长条 */
-.digit-strip {
-    display: flex; flex-direction: column;
-    transition: transform 0.5s cubic-bezier(0.1, 0.9, 0.2, 1); /* 弹性缓冲效果 */
-}
-.label { display: block; margin-top: 5px; font-size: 12px; color: #aaa; font-weight: bold;}
-.separator { font-size: 40px; color: #ccc; margin-top: -20px; }
-
-/* --- 4. 心形 Grid 照片墙 (电脑端布局) --- */
-.heart-gallery-wrapper {
-    display: flex; justify-content: center;
-    padding: 50px 0;
-    background: #fff5f7;
-    border-radius: 20px;
-    margin-top: 40px;
-}
-.heart-grid {
-    display: grid;
-    /* 定义 9 列网格 */
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(8, 60px); /* 8行，基础高度 */
-    gap: 8px;
-    width: 90%; max-width: 800px;
-}
-/* 默认小格子图片 */
-.heart-photo {
+/* --- 主布局 --- */
+.split-container {
+    display: flex;
     width: 100%; height: 100%;
-    object-fit: cover; border-radius: 6px;
-    cursor: pointer; transition: transform 0.3s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.heart-photo:hover { transform: scale(1.05); z-index: 10; }
 
-/* 定义心形的空白区域 (用 visibility: hidden 或者不放图片) 
-   CSS Grid 自动流式布局，我们只需要控制放置图片的位置 */
+/* --- 左侧：心形墙 --- */
+.left-panel {
+    flex: 0 0 55%; /* 左侧占 55% */
+    background: #111;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative;
+    border-right: 1px solid #222;
+}
 
-/* --- 响应式适配 --- */
+.panel-header {
+    position: absolute; top: 30px; left: 40px; z-index: 10;
+}
+.panel-header h1 {
+    font-family: 'Times New Roman', serif; font-size: 2.5rem;
+    background: linear-gradient(to right, #ff9a9e, #fecfef);
+    -webkit-background-clip: text; color: transparent;
+    margin-bottom: 10px;
+}
+.hint-text {
+    position: absolute; bottom: 20px; color: #444; font-size: 0.8rem; letter-spacing: 1px;
+}
+
+/* 计时器样式 */
+.odometer-box { display: flex; gap: 8px; font-family: 'Courier New', monospace; color: #888; }
+.odo-group { display: flex; align-items: center; }
+.odo-digit {
+    width: 20px; height: 30px; background: #222; border-radius: 3px;
+    overflow: hidden; position: relative; margin-right: 1px;
+}
+.odo-strip {
+    position: absolute; top: 0; left: 0; width: 100%;
+    display: flex; flex-direction: column;
+    transition: transform 0.8s cubic-bezier(0.1, 1, 0.2, 1); /* 丝滑滚动 */
+}
+.odo-strip div { height: 30px; line-height: 30px; text-align: center; font-size: 18px; color: #eee; }
+.odo-label { font-size: 12px; margin: 0 5px; color: #555; }
+
+/* --- 心形 Grid (19张图布局) --- */
+.heart-mosaic-wrapper {
+    width: 600px; height: 500px;
+    /* 核心：让心形在左侧面板居中 */
+    display: flex; justify-content: center; align-items: center;
+}
+.heart-mosaic {
+    display: grid;
+    /* 6列 x 6行 */
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 6px;
+    width: 100%; height: 100%;
+}
+.heart-item {
+    position: relative; overflow: hidden; border-radius: 4px;
+    cursor: pointer; opacity: 0.5; filter: grayscale(80%);
+    transition: all 0.4s ease;
+}
+/* 选中或悬停状态：高亮、彩色、放大 */
+.heart-item:hover, .heart-item.active {
+    opacity: 1; filter: grayscale(0%);
+    transform: scale(1.05); z-index: 20;
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+    border: 2px solid #ff4757;
+}
+.heart-item img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Grid 区域定义 (保持原计划，因为4:3也可适配方格) */
+/* 行 1 */
+.pos-1 { grid-column: 2 / 3; grid-row: 1 / 2; }
+.pos-2 { grid-column: 3 / 4; grid-row: 1 / 2; }
+.pos-3 { grid-column: 4 / 5; grid-row: 1 / 2; }
+.pos-4 { grid-column: 5 / 6; grid-row: 1 / 2; }
+/* 行 2 (宽) */
+.pos-5 { grid-column: 1 / 3; grid-row: 2 / 3; }
+.pos-6 { grid-column: 3 / 5; grid-row: 2 / 3; }
+.pos-7 { grid-column: 5 / 7; grid-row: 2 / 3; }
+/* 行 3 (宽) */
+.pos-8 { grid-column: 1 / 3; grid-row: 3 / 4; }
+.pos-9 { grid-column: 3 / 5; grid-row: 3 / 4; }
+.pos-10 { grid-column: 5 / 7; grid-row: 3 / 4; }
+/* 行 4 (宽) */
+.pos-11 { grid-column: 2 / 4; grid-row: 4 / 5; }
+.pos-12 { grid-column: 4 / 6; grid-row: 4 / 5; }
+/* 行 5 (普通) */
+.pos-13 { grid-column: 2 / 3; grid-row: 5 / 6; }
+.pos-14 { grid-column: 3 / 4; grid-row: 5 / 6; }
+.pos-15 { grid-column: 4 / 5; grid-row: 5 / 6; }
+.pos-16 { grid-column: 5 / 6; grid-row: 5 / 6; }
+/* 行 6 (尖) */
+.pos-17 { grid-column: 3 / 5; grid-row: 6 / 7; }
+
+/* --- 右侧：统一视窗 --- */
+.right-panel {
+    flex: 1; /* 占剩余空间 (45%) */
+    background: #050505;
+    display: flex; justify-content: center; align-items: center;
+    padding: 40px;
+}
+.viewer-container {
+    position: relative;
+    width: 100%; max-width: 600px; /* 限制最大宽 */
+    height: 500px; /* 限制高度，与左侧心形近似 */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+.viewer-container.visible { opacity: 1; transform: translateY(0); }
+
+/* 图片样式：关键改动 */
+.viewer-container img {
+    width: 100%; height: 100%;
+    /* contain: 完整显示图片，会有黑边 */
+    /* cover: 充满容器，会裁切 */
+    /* 建议用 contain 保证 16:9 和 4:3 都能看全 */
+    object-fit: contain; 
+}
+
+/* 底部蒙版文字 */
+.view-overlay {
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 80px 30px 30px; /* 上方 padding 给渐变留空间 */
+    background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.6) 50%, transparent);
+    color: white;
+    text-align: left;
+}
+.view-meta { color: #ff6b81; font-size: 0.9rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+.view-meta .sep { color: #555; margin: 0 8px; }
+.view-overlay p { font-size: 1.1rem; line-height: 1.6; color: #eee; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+/* --- 手机端适配 --- */
 @media (max-width: 768px) {
-    /* 手机端：轮播图变矮 */
-    .carousel-container { height: 250px; }
+    .split-container { flex-direction: column-reverse; }
     
-    /* 手机端：老虎机变小 */
-    .slot-frame { width: 40px; height: 50px; font-size: 24px; line-height: 50px; }
-    .separator { font-size: 24px; margin-top: -10px; }
-    
-    /* 手机端：心形墙改为普通的网格，因为手机太窄拼心形看不清 */
-    .heart-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3列瀑布流 */
-        grid-template-rows: auto;
-        gap: 5px;
-    }
-    .heart-gallery-wrapper { padding: 10px; }
+    /* 手机上心形在底部 */
+    .left-panel { flex: 0 0 50%; border-right: none; border-top: 1px solid #222; padding: 20px 0; }
+    .heart-mosaic-wrapper { transform: scale(0.65); height: auto; margin-top: -50px; }
+    .panel-header { position: absolute; top: 10px; left: 0; width: 100%; text-align: center; }
+    .panel-header h1 { font-size: 1.5rem; }
+    .odometer-box { justify-content: center; }
+    .hint-text { display: none; }
+
+    /* 手机上视窗在顶部 */
+    .right-panel { flex: 0 0 50%; padding: 10px; }
+    .viewer-container { height: 100%; border-radius: 0; }
+    .view-overlay { padding: 40px 20px 20px; }
+    .view-overlay p { font-size: 1rem; }
 }
 
-/* 弹窗样式 */
-.lightbox.hidden { opacity: 0; pointer-events: none; }
-.lightbox {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9); z-index: 10000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: opacity 0.3s;
-}
-#lightbox-img { max-width: 95%; max-height: 70vh; margin-bottom: 20px; border: 5px solid white;}
-.caption-box p { color: white; font-size: 1.2rem; }
-.close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; }
-.love-letter { text-align: center; padding: 20px; color: #ff6b81; font-style: italic;}
-@keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+@keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
