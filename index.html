@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>致亲爱的宝宝</title>
+    <meta name="description" content="致杨雨萱宝宝" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <style>
+      /* --- 全局重置 --- */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: linear-gradient(135deg, #4bc0c8, #c779d0, #feac5e);
+        font-family: "思源黑体", "Microsoft YaHei", sans-serif;
+        overflow-x: hidden;
+        padding-top: 20px;
+        padding-bottom: 60px;
+      }
+
+      /* --- 氛围层 --- */
+      .atmosphere {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+      
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        animation: floatUp linear infinite;
+      }
+      .p1 { width: 20px; height: 20px; left: 10%; bottom: -20px; animation-duration: 15s; }
+      .p2 { width: 10px; height: 10px; left: 25%; bottom: -20px; animation-duration: 12s; animation-delay: 2s; }
+      .p3 { width: 30px; height: 30px; left: 60%; bottom: -20px; animation-duration: 20s; animation-delay: 1s; opacity: 0.3; }
+      .p4 { width: 15px; height: 15px; left: 80%; bottom: -20px; animation-duration: 18s; animation-delay: 5s; }
+
+      @keyframes floatUp {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        20% { opacity: 0.8; }
+        100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+      }
+
+      /* --- 核心容器 (Center Wrapper) --- */
+      .center-wrapper {
+        width: 92%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 10;
+        animation: hoverFloat 5s ease-in-out infinite;
+      }
+
+      @keyframes hoverFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      /* --- 照片网格 --- */
+      .heart-wall {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px; 
+        width: 100%;
+      }
+
+      .heart-wall div {
+        aspect-ratio: 1 / 1;
+        border-radius: 6px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .heart-wall .empty {
+        background: transparent;
+        pointer-events: none;
+      }
+
+      .heart-wall img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+        cursor: pointer;
+        display: block;
+        border-radius: 6px;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: #fff;
+      }
+
+      @media (hover: hover) {
+        .heart-wall img:hover {
+          transform: scale(1.3) translateY(-10px) rotate(2deg);
+          z-index: 50; 
+          border-color: #fff;
+          box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+        }
+      }
+
+      /* --- 倒影容器 --- */
+      .reflection-wrapper {
+        width: 100%;
+        height: 60px; 
+        overflow: hidden; 
+        margin-top: 4px; 
+        position: relative;
+        opacity: 0.5;
+        pointer-events: none; 
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 70%);
+        mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 70%);
+      }
+
+      .reflection-content {
+        width: 100%;
+        transform: scaleY(-1);
+        filter: blur(2px);
+      }
+
+      /* --- 计时器 --- */
+      .timer-box {
+        width: 110%;
+        margin-top: -15px;
+        padding: 5px 0;
+        text-align: center;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        animation: none; 
+      }
+      
+      .timer-box span {
+        font-family: "Microsoft YaHei", sans-serif;
+        font-weight: 800; 
+        font-size: 26px; 
+        margin: 0 2px;
+        color: #fffde7; 
+        text-shadow: 0 0 10px rgba(255, 235, 59, 0.8), 0 2px 5px rgba(0,0,0,0.3);
+      }
+
+      /* --- 开启按钮 --- */
+      .start-btn {
+        margin-top: 30px;
+        padding: 12px 45px;
+        background-color: rgba(255, 255, 255, 0.85);
+        color: #c779d0;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        border: 2px solid #fff;
+        animation: pulse 2s infinite;
+        z-index: 20;
+        position: relative;
+      }
+
+      .start-btn:hover {
+        background-color: #fff;
+        color: #feac5e;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      /* --- 信纸部分 --- */
+      .box {
+        width: 92%;
+        max-width: 600px;
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+        text-align: justify;
+        color: #333;
+        font-size: 17px;
+        line-height: 1.8;
+        letter-spacing: 0.034em;
+        margin-top: 40px;
+        
+        display: none; 
+        opacity: 0;
+        /* 初始状态：位置稍微靠上，模拟被折叠或未抽出的状态 */
+        transform: translateY(-20px) scaleY(0.95);
+        transform-origin: top center; /* 从顶部展开 */
+        position: relative;
+        z-index: 20;
+      }
+
+      /* 修改后的动画：从上往下舒展开 */
+      .box.show {
+        display: block;
+        animation: unfoldLetter 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      @keyframes unfoldLetter {
+        0% {
+          opacity: 0;
+          transform: translateY(-40px) scaleY(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scaleY(1);
+        }
+      }
+
+      /* --- 全屏遮罩 --- */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+        padding: 20px;
+        box-sizing: border-box;
+        backdrop-filter: blur(5px);
+      }
+
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .overlay img {
+        max-width: 95vw;
+        max-height: 80vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border: 4px solid #fff;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .overlay p {
+        color: #fff;
+        font-size: 18px;
+        margin-top: 15px;
+        text-align: center;
+        max-width: 100%;
+        line-height: 1.5;
+        font-weight: 300;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      }
+
+      .close-hint {
+        position: absolute;
+        bottom: 30px;
+        color: rgba(255,255,255,0.6);
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+
+      @keyframes zoomIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      /* --- 手机端专项适配 --- */
+      @media (max-width: 600px) {
+        .center-wrapper { width: 95%; }
+        .heart-wall { gap: 4px; }
+        .timer-box { width: 100%; font-size: 15px; }
+        .timer-box span { font-size: 22px; }
+        .box { width: 92%; padding: 25px; font-size: 16px; }
+        .start-btn { margin-top: 25px; }
+      }
+    /* === 音乐按钮样式 === */
+.music-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+  opacity: 0; /* 初始隐藏 */
+  visibility: hidden;
+  transition: all 0.5s;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.music-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+/* 播放时的旋转动画 */
+.music-btn.playing {
+  animation: rotateMusic 3s linear infinite;
+  background: rgba(255, 255, 255, 0.5); /* 播放时亮一点 */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+/* 暂停时显示一条斜杠 (可选，简单的暂停效果) */
+.music-btn:not(.playing) svg {
+  opacity: 0.7;
+}
+
+@keyframes rotateMusic {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+  </head>
+
+  <body>
+<!-- === 音乐组件开始 === -->
+<audio id="bg-music" loop>
+  <source src="music.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- 音乐控制按钮 (初始隐藏) -->
+<div class="music-btn" id="music-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+  </svg>
+</div>
+<!-- === 音乐组件结束 === -->
+    <div class="atmosphere">
+      <div class="particle p1"></div>
+      <div class="particle p2"></div>
+      <div class="particle p3"></div>
+      <div class="particle p4"></div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <img src="" alt="Memory" id="overlay-img" />
+      <p id="overlay-text"></p>
+      <div class="close-hint">点击任意处关闭</div>
+    </div>
+
+    <div class="center-wrapper">
+      <div class="heart-wall" id="real-wall">
+        <!-- Row 1 -->
+        <div class="empty"></div>
+        <div><img src="photos/1.jpg" data-text="是漂亮的雪玫瑰呀~" /></div>
+        <div><img src="photos/2.jpg" data-text="第一次一起去海边，宝宝安排的约会地点真好！" /></div>
+        <div class="empty"></div>
+        <div><img src="photos/3.jpg" data-text="第一次约会看电影，看的《柯南》~" /></div>
+        <div><img src="photos/4.jpg" data-text="第一次打赛车游戏，是谁得了第一名呀？" /></div>
+        <div class="empty"></div>
+
+        <!-- Row 2 -->
+        <div><img src="photos/5.jpg" data-text="新加坡好漂亮一定要一起去！" /></div>
+        <div><img src="photos/6.jpg" data-text="学长好，那个我是24级哒···就是想问一下，做科创什么时间开始比较好呢？" /></div>
+        <div><img src="photos/7.jpg" data-text="你发给我的小猫咪（胖猫咪bushi）" /></div>
+        <div><img src="photos/8.jpg" data-text="宝宝化妆之后真嘟好漂亮（素颜也美~）" /></div>
+        <div><img src="photos/9.jpg" data-text="复合之后第一次给宝宝送吃的呜呜呜" /></div>
+        <div><img src="photos/10.jpg" data-text="咱也是有头有脸的人物咯~" /></div>
+        <div><img src="photos/11.jpg" data-text="宝宝动手能力真强，我对电路就一窍不通" /></div>
+
+        <!-- Row 3 -->
+        <div><img src="photos/12.jpg" data-text="宝宝家的小蓝猫真嘟好看！" /></div>
+        <div><img src="photos/13.jpg" data-text="在灰色的世界里遇见彩色的你~" /></div>
+        <div><img src="photos/14.jpg" data-text="我的小枕头被宝宝抢走了呜呜，送给包包咯~" /></div>
+        <div><img src="photos/15.jpg" data-text="yyx❤yyx" /></div>
+        <div><img src="photos/16.jpg" data-text="跟包包的视频通话~" /></div>
+        <div><img src="photos/17.jpg" data-text="一起去猫咖看到的打折小猫咪" /></div>
+        <div><img src="photos/18.jpg" data-text="我们一起拿奖拿到手软！战友情" /></div>
+
+        <!-- Row 4 -->
+        <div class="empty"></div>
+        <div><img src="photos/19.jpg" data-text="以前的屏保嘻嘻" /></div>
+        <div><img src="photos/20.jpg" data-text="包包的怼脸照好萌呀啊啊啊啊！" /></div>
+        <div><img src="photos/21.jpg" data-text="带包包上电视" /></div>
+        <div><img src="photos/22.jpg" data-text="总让人家戴眼镜（不喜欢呜呜）" /></div>
+        <div><img src="photos/23.jpg" data-text="我们有相同的恋爱观" /></div>
+        <div class="empty"></div>
+
+        <!-- Row 5 -->
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div><img src="photos/24.jpg" data-text="包包写的这两段文字让人家好感动（不许忘了我的好！）" /></div>
+        <div><img src="photos/25.jpg" data-text="给宝宝带的爱心早餐，包包很喜欢" /></div>
+        <div><img src="photos/26.jpg" data-text="给宝宝剥的柚子，民勇关门再也买不到了呜呜···" /></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+
+        <!-- Row 6 -->
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div><img src="photos/27.jpg" data-text="一起去吃的旋转火锅，是最美味的一顿~" /></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+      </div>
+
+      <div class="reflection-wrapper">
+        <div class="heart-wall reflection-content" id="reflection-wall"></div>
+      </div>
+
+      <div class="timer-box">
+        亲爱的杨雨萱女士：我们已经在一起 <br>
+        <span id="day">0</span> 天 
+        <span id="hour">0</span> 小时 
+        <span id="min">0</span> 分钟 
+        <span id="sec">0</span> 秒
+      </div>
+
+    </div>
+
+    <div class="start-btn" id="start-btn">
+      致洋芋包 (亲启)
+    </div>
+
+    <div class="box" id="letter-box">
+      <!-- 增加一个ID，方便JS定位到这里 -->
+      <div id="letter-content-start">致亲爱的杨雨萱女士：</div>
+      <p>包包看到这里的时候我们已经在一起多少天了呀？</p>
+      <p>其实还没在一起的时候，人家是故意在我们共同好友的朋友圈搞抽象嘟，只是想要吸引某人的注意~嘻嘻最终还是得手啦，都怪我那迷人的幽默感。</p>
+      <p>
+        我们还喜欢在抖音上聊天，每次在抖音上看到幸福的视频，比如线条小狗和一二布布都会第一时间想到你~
+      </p>
+
+      <p>
+        当感觉爱变淡的时候，真正的爱才开始浮现。
+      </p>
+      <p>
+        从一些事情之后，我就一直在锻炼身体，从之前全力才能完成10个俯卧撑，到现在30个；悬垂从40秒进步到90秒；双力臂从一个起不来到解锁···这一切的目标就是：我想有保护好包包的能力！
+      </p>
+      <p>
+       包包不愿意做的事情咱就不做，愿意做的事情我带包包去做！我要把包包照顾得很好~是不是嘛你说你说！
+      </p>
+      <p>
+        我原本以为自己会平平常常地度过大学···是包包让我的世界变得彩色；是包包让我喜欢上了小猫咪；是包包教会了我要有耐心；是包包让我体会了爱和被爱~
+      </p>
+      <p>
+        这个作为礼物会不会有点草率，呜呜呜人家铺垫了芥末久···
+      </p>
+      <p>还有好多想跟包包做的事情！去喜欢的地方旅行、去最好玩的游乐园、去吃超级贵的大餐···我们要一起去~听到没！</p>
+
+           <p style="text-align: right">最爱你的于耀翔勇士</p>
+    </div>
+
+    <script>
+      // 1. 倒影
+      const realWall = document.getElementById('real-wall');
+      const reflectionWall = document.getElementById('reflection-wall');
+      reflectionWall.innerHTML = realWall.innerHTML;
+
+      // 2. 计时器
+      // 请修改时间
+      const startDate = new Date("2025-05-10T23:00:00"); 
+
+      function updateTimer() {
+        const now = new Date();
+        const diff = now - startDate; 
+
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((diff / (1000 * 60)) % 60);
+          const seconds = Math.floor((diff / 1000) % 60);
+
+          document.getElementById("day").innerText = days;
+          document.getElementById("hour").innerText = hours;
+          document.getElementById("min").innerText = minutes;
+          document.getElementById("sec").innerText = seconds;
+        }
+      }
+
+      setInterval(updateTimer, 1000);
+      updateTimer(); 
+
+      // 3. 交互逻辑 (核心修改)
+      const overlay = document.getElementById("overlay");
+      const overlayImg = document.getElementById("overlay-img");
+      const overlayText = document.getElementById("overlay-text");
+      const startBtn = document.getElementById("start-btn");
+      const letterBox = document.getElementById("letter-box");
+
+      startBtn.addEventListener("click", function() {
+    // === 新增：播放音乐并显示按钮 ===
+    playMusic();
+        this.style.opacity = "0";
+        setTimeout(() => { this.style.display = "none"; }, 300);
+        
+        // 显示信件
+        letterBox.classList.add("show");
+        
+        // 【关键修复】延迟一点点等待DOM渲染，然后精确滚动到信件顶部
+        setTimeout(() => {
+          // 获取信件盒子距离页面顶部的绝对位置
+          // 减去20px是为了留一点点视觉缓冲，不要贴着屏幕边
+          const y = letterBox.getBoundingClientRect().top + window.pageYOffset - 20;
+          
+          window.scrollTo({
+            top: y,
+            behavior: 'smooth'
+          });
+        }, 150); // 150ms 延时确保动画开始后再滚动
+      });
+
+      const photos = realWall.querySelectorAll("img");
+      photos.forEach((photo) => {
+        photo.addEventListener("click", function () {
+          const src = this.getAttribute("src");
+          const text = this.getAttribute("data-text");
+
+          overlayImg.src = src;
+          overlayText.innerText = text ? text : ""; 
+          overlay.classList.add("active");
+        });
+      });
+
+      overlay.addEventListener("click", function () {
+        overlay.classList.remove("active");
+      });
+  // === 音乐控制逻辑 ===
+  const bgMusic = document.getElementById("bg-music");
+  const musicBtn = document.getElementById("music-btn");
+  let isPlaying = false;
+
+  function playMusic() {
+    bgMusic.play().then(() => {
+      isPlaying = true;
+      musicBtn.classList.add("playing");
+      musicBtn.style.opacity = "1";
+      musicBtn.style.visibility = "visible";
+    }).catch(err => {
+      console.log("自动播放被拦截，等待用户交互");
+    });
+  }
+
+  // 点击音乐按钮控制暂停/播放
+  musicBtn.addEventListener("click", function() {
+    if (isPlaying) {
+      bgMusic.pause();
+      musicBtn.classList.remove("playing");
+    } else {
+      bgMusic.play();
+      musicBtn.classList.add("playing");
+    }
+    isPlaying = !isPlaying;
+  });   
+ </script>
+  </body>
+</html>
